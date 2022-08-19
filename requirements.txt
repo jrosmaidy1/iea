@@ -1,0 +1,12 @@
+Pillow
+flask_bcrypt
+flask_wtf
+flask_login
+wtforms
+flask_mail
+email_validator
+python_dotenv
+flask_sqlalchemy
+psycopg2-binary
+base
+sqlalchemy
