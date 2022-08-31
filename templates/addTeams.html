@@ -1,0 +1,23 @@
+        <form method="POST">
+            {{ form.csrf_token() }}
+            <!-- name registration -->
+                Name
+            {{ form.name }}
+            <br>
+                bio
+            <br>
+            {{ form.bio(rows = "5") }}
+            <br>
+                certification
+            <br>
+
+            {{ form.certification(rows = "5") }}
+
+            <br>
+            {{ form.submit }}
+
+
+        </form>
+    </section>
+
+</body>

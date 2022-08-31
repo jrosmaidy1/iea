@@ -1,0 +1,8 @@
+    <h2>Name: {{ team.name }}</h2>
+	Bio: {{ team.bio|safe }} 
+    <br>
+    <br>
+	Certification: {{ team.certification|safe }}
+    <br>
+    <br>
+    <a href="{{ url_for('teams')}}" class="btn btn-outline-secondary btn-sm">View Teams</a>

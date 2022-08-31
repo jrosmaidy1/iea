@@ -1,0 +1,30 @@
+
+<br/>
+<h2>Edit Team Info...</h2>
+<br/>
+	<form method="POST">
+		{{ form.hidden_tag() }}
+
+		{{ form.name.label(class="form-label") }}
+
+		{{ form.name(class="form-control") }}
+		<br/>
+
+		 
+		{{ form.bio.label(class="form-label") }}
+        <br>
+		{{ form.bio(class="form-control", rows="10") }}
+		<br/>
+		
+		{{ form.certification.label(class="form-label") }}
+        <br>
+		{{ form.certification(class="form-control", rows="10") }}
+		<br/>
+
+		
+		{{ form.submit(class="btn btn-secondary") }}
+
+
+	</form>
+	
+</div>
