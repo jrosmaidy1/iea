@@ -11,7 +11,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
 from wtforms import BooleanField, DecimalField, PasswordField, StringField, SubmitField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
-
+from wtforms.widgets import TextArea
 load_dotenv(find_dotenv())
 
 app = flask.Flask(__name__)
@@ -47,6 +47,24 @@ class Users(db.Model, UserMixin):
     def __repr__(self):
         return "<Name %r>" % self.name
 
+# Teams database model
+class Teams(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(255))
+    bio = db.Column(db.Text)
+    certification = db.Column(db.Text)
+
+#flask Teams form
+class TeamsForm(FlaskForm):
+    name = StringField("Name", validators=[DataRequired()])
+    bio = StringField("Bio",widget=TextArea())
+    certification = StringField("Certification", widget=TextArea())
+    submit = SubmitField("Save")
+
+@app.route("/teams", methods=["GET", "POST"])
+def teams():
+    teams = Teams.query.all()
+    return flask.render_template("/teams.html",teams=teams)
 
 # flask RegistrationForm
 class RegistrationForm(FlaskForm):
@@ -81,9 +99,6 @@ def main():
 
 @app.route("/registration", methods=["GET", "POST"])
 def registration():
-    """
-    Registration page, requires name and email
-    """
     form = RegistrationForm()
     name = None  # initialize name
     if form.validate_on_submit():
@@ -103,7 +118,72 @@ def registration():
     return flask.render_template(
         "/registration.html", form=form, name=name, email=email
     )
+# Add Teams
+@app.route("/addTeams", methods=["GET", "POST"])
+def addTeams():
+    form = TeamsForm()
+    if form.validate_on_submit():
+        team = Teams(name=form.name.data, bio=form.bio.data, certification = form.certification.data)
+        form.name.data = ''
+        form.bio.data = ''
+        form.certification.data = ''
+        db.session.add(team)
+        db.session.commit()
+        flash("Team data added Successfully!")
+    return flask.render_template("addTeams.html", form=form)
 
+@app.route('/teams/delete/<int:id>')
+def delete_team(id):
+    team_to_delete = Teams.query.get_or_404(id)
+    try:
+        db.session.delete(team_to_delete)
+        db.session.commit()
+        # Return a message
+        flash("Blog Post Was Deleted!")
+        # Grab all the posts from the database
+        teams = Teams.query.all()
+        return flask.render_template("teams.html", teams=teams)
+
+    except:
+    	# Return an error message
+        flash("Whoops! There was a problem deleting post, try again...")
+        teams = Teams.query.all()
+        return flask.render_template("teams.html", teams=teams)
+# else:
+#     # Return a message
+#     flash("You Aren't Authorized To Delete That Post!")
+
+#     # Grab all the posts from the database
+    # teams = Teams.query.all()
+    # return flask.render_template("teams.html", teams=teams)
+
+@app.route('/teams/edit/<int:id>', methods=['GET', 'POST'])
+def edit_team(id):
+    team = Teams.query.get_or_404(id)
+    form = TeamsForm()
+    if form.validate_on_submit():
+        team.name = form.name.data
+        #post.author = form.author.data
+        team.bio = form.bio.data
+        team.certification = form.certification.data
+        # Update Database
+        db.session.add(team)
+        db.session.commit()
+        flash("Post Has Been Updated!")
+        return redirect(url_for('team', id=team.id))
+    form.name.data = team.name
+    #form.author.data = post.author
+    form.bio.data = team.bio
+    form.certification.data = team.certification
+    return flask.render_template('editTeams.html', form=form)
+	# else:
+	# 	flash("You Aren't Authorized To Edit This Post...")
+	# 	posts = Posts.query.order_by(Posts.date_posted)
+	# 	return render_template("posts.html", posts=posts)       
+@app.route('/team/<int:id>')
+def team(id):
+	team = Teams.query.get_or_404(id)
+	return flask.render_template('team.html', team=team)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
