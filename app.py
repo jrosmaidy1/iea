@@ -6,12 +6,16 @@ import flask
 import requests
 from dotenv import find_dotenv, load_dotenv
 from flask import flash, redirect, request, url_for
-from flask_login import LoginManager, UserMixin, current_user, login_user, logout_user
+from flask_login import (LoginManager, UserMixin, current_user, login_user,
+                         logout_user)
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf import FlaskForm
-from wtforms import BooleanField, DecimalField, PasswordField, StringField, SubmitField
-from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
+from wtforms import (BooleanField, DecimalField, PasswordField, StringField,
+                     SubmitField)
+from wtforms.validators import (DataRequired, Email, EqualTo, Length,
+                                ValidationError)
 from wtforms.widgets import TextArea
+
 load_dotenv(find_dotenv())
 
 app = flask.Flask(__name__)
